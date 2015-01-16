@@ -1,0 +1,10 @@
+.*/*.suo
+.*/*.user
+
+.*/Package/Bin/./*
+.vendor/*
+
+.*/bin/./*
+.*/obj/./*
+
+packages/*

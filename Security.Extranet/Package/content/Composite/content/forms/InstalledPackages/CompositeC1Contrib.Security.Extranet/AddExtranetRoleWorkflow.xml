@@ -1,0 +1,19 @@
+﻿<cms:formdefinition xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:f="http://www.composite.net/ns/function/1.0">
+  <cms:bindings>
+    <cms:binding name="Name" type="System.String" optional="true" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="Name" />
+    </cms:layout.label>
+
+    <FieldGroup Label="Settings">
+      <TextBox Label="Name">
+        <TextBox.Text>
+          <cms:bind source="Name"/>
+        </TextBox.Text>
+      </TextBox>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>

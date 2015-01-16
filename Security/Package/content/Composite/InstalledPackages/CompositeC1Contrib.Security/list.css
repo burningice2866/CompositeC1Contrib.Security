@@ -1,0 +1,100 @@
+﻿@namespace url("http://www.w3.org/1999/xhtml");
+@namespace ui url("http://www.w3.org/1999/xhtml");
+
+ui|scrollbox#scrollbox {
+    background-color: white !important;
+    height: 100%;
+    width: 100%;
+}
+
+    ui|scrollbox#scrollbox table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    ui|scrollbox#scrollbox td, ui|scrollbox#scrollbox th {
+        padding: 6px 0 6px 12px;
+        white-space: nowrap;
+    }
+
+    ui|scrollbox#scrollbox td {
+        border-bottom: 1px solid ThreeDLightShadow;
+        vertical-align: top;
+    }
+
+    ui|scrollbox#scrollbox th {
+        text-align: left;
+        font-weight: bold;
+        background-color: $(color:threedface);
+        border-bottom: 1px solid ThreeDShadow;
+        border-top: 1px solid ThreeDHighlight;
+    }
+
+ui|toolbar ui|datainput,
+ui|toolbar input#PageNumber {
+    float: left;
+}
+
+    ui|toolbar ui|datainput ui|box {
+        height: auto;
+    }
+
+table tr.hilite > td {
+    background-color: ThreeDFace;
+}
+
+ui|labelbox.entitytitle,
+ui|labelbox.entitytitle ui|labelbody,
+ui|labelbox.entitytitle ui|labelbody ui|labeltext {
+    width: 100%;
+    cursor: pointer;
+}
+
+
+#logtable ui|clickbutton ui|labelbox {
+    padding: 4px 7px;
+}
+
+table#filter td, table#filter th {
+    font-weight: normal;
+    padding: 0 0 0 12px;
+}
+
+    table#filter th input {
+        padding: 3px 0 4px 7px;
+    }
+
+    table#filter th.input {
+        padding: 0;
+    }
+
+scrollbox#scrollbox .calendar td, scrollbox#scrollbox .calendar th {
+    padding: 3px 0;
+    text-align: center;
+    font-weight: normal;
+}
+
+td.time,
+th.time {
+    width: 140px;
+}
+
+td.user,
+th.user {
+    width: 130px;
+}
+
+td.task,
+th.task {
+    width: 150px;
+}
+
+td.activity,
+th.activity {
+    width: 100px;
+}
+
+td.command * {
+    color: #0000FF;
+    text-decoration: underline;
+}

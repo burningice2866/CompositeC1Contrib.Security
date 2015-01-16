@@ -1,0 +1,85 @@
+﻿<cms:formdefinition xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:f="http://www.composite.net/ns/function/1.0">
+  <cms:bindings>
+    <cms:binding name="UserName" type="System.String" optional="true" />
+    <cms:binding name="Email" type="System.String" optional="true" />
+
+    <cms:binding name="IsApproved" type="System.Boolean" optional="true" />
+    <cms:binding name="IsLockedOut" type="System.Boolean" optional="true" />
+
+    <cms:binding name="CreationDate" type="System.String" optional="true" />
+    <cms:binding name="LastLoginDate" type="System.DateTime" optional="true" />
+    <cms:binding name="LastPasswordChangedDate" type="System.DateTime" optional="true" />
+    <cms:binding name="LastLockoutDate" type="System.DateTime" optional="true" />
+    <cms:binding name="LastActivityDate" type="System.DateTime" optional="true" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="UserName" />
+    </cms:layout.label>
+
+    <TabPanels>
+      <PlaceHolder Label="Settings">
+        <FieldGroup>
+          <TextBox Label="Username" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="UserName"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Email">
+            <TextBox.Text>
+              <cms:bind source="Email"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <CheckBox Label="Is approved">
+            <CheckBox.Checked>
+              <cms:bind source="IsApproved"/>
+            </CheckBox.Checked>
+          </CheckBox>
+
+          <CheckBox Label="Is locked out">
+            <CheckBox.Checked>
+              <cms:bind source="IsLockedOut"/>
+            </CheckBox.Checked>
+          </CheckBox>
+        </FieldGroup>
+      </PlaceHolder>
+
+      <PlaceHolder Label="History">
+        <FieldGroup>
+          <TextBox Label="Creation date" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="CreationDate"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Last login" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="LastLoginDate"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Password change" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="LastPasswordChangedDate"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Lockout date" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="LastPasswordChangedDate"/>
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Last activy" Type="ReadOnly">
+            <TextBox.Text>
+              <cms:read source="LastActivityDate"/>
+            </TextBox.Text>
+          </TextBox>
+        </FieldGroup>
+      </PlaceHolder>
+    </TabPanels>
+  </cms:layout>
+</cms:formdefinition>

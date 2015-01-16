@@ -1,0 +1,52 @@
+<cms:formdefinition
+  xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0"
+  xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0"
+  xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0"
+  xmlns:f="http://www.composite.net/ns/function/1.0"
+  xmlns:security="https://bitbucket.org/burningice/compositec1contrib.security/1.0">
+  <cms:bindings>
+    <cms:binding name="Title" type="System.String" optional="true" />
+    <cms:binding name="Permissions" type="CompositeC1Contrib.Security.Data.Types.IDataPermissions" />
+    <cms:binding name="EvaluatedPermissions" type="CompositeC1Contrib.Security.EvaluatedPermissions" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="Title" />
+    </cms:layout.label>
+
+    <FieldGroup>
+      <security:InheritedPermissions Label="Inherited permissions">
+        <security:InheritedPermissions.EvaluatedPermissions>
+          <cms:bind source="EvaluatedPermissions" />
+        </security:InheritedPermissions.EvaluatedPermissions>
+      </security:InheritedPermissions>
+
+      <CheckBox Label="Disable inheritance">
+        <CheckBox.Checked>
+          <cms:bind source="Permissions.DisableInheritance" />
+        </CheckBox.Checked>
+      </CheckBox>
+
+      <MultiKeySelector Label="Allow" Help="" Required="false" CompactMode="true">
+        <MultiKeySelector.SelectedAsString>
+          <cms:bind source="Permissions.AllowedRoles" />
+        </MultiKeySelector.SelectedAsString>
+
+        <MultiKeySelector.Options>
+          <ff:StaticMethodCall Type="System.Web.Security.Roles" Method="GetAllRoles" />
+        </MultiKeySelector.Options>
+      </MultiKeySelector>
+
+      <MultiKeySelector Label="Deny" Help="" Required="false" CompactMode="true">
+        <MultiKeySelector.SelectedAsString>
+          <cms:bind source="Permissions.DeniedRoles" />
+        </MultiKeySelector.SelectedAsString>
+
+        <MultiKeySelector.Options>
+          <ff:StaticMethodCall Type="System.Web.Security.Roles" Method="GetAllRoles" />
+        </MultiKeySelector.Options>
+      </MultiKeySelector>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>
