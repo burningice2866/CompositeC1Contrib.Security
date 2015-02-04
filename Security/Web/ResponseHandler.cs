@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.Security.Web
                     FormsAuthentication.SignOut();
                     ctx.Session.Clear();
 
-                    var uri = MakeNormal(new Uri(ctx.Request.Url, "/"), ctx);
+                    var uri = new Uri(ctx.Request.Url, "/");
 
                     EndResult(result, uri);
                 }
@@ -77,17 +77,6 @@ namespace CompositeC1Contrib.Security.Web
             }
 
             EndResult(result, null);
-        }
-
-        private static Uri MakeNormal(Uri uri, HttpContext ctx)
-        {
-            var uriBuilder = new UriBuilder(uri)
-            {
-                Scheme = "http",
-                Port = ctx.Request.Url.Port
-            };
-
-            return uriBuilder.Uri;
         }
 
         private static void EndResult(RenderingResponseHandlerResult result, Uri uri)
