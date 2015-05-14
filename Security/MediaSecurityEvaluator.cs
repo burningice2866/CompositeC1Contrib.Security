@@ -7,77 +7,61 @@ using System.Linq;
 using Composite.Data;
 using Composite.Data.Types;
 
+using CompositeC1Contrib.Security.Data;
 using CompositeC1Contrib.Security.Data.Types;
 
 namespace CompositeC1Contrib.Security
 {
-    public class MediaSecurityEvaluator : SecurityEvaluator, ISecurityEvaluatorFor<IMediaFile>, ISecurityEvaluatorFor<IMediaFileFolder>
+    public class MediaSecurityEvaluator : SecurityEvaluator
     {
-        private static readonly ConcurrentDictionary<string, EvaluatedPermissions> Cache = new ConcurrentDictionary<string, EvaluatedPermissions>();
+        private readonly ConcurrentDictionary<string, EvaluatedPermissions> _cache = new ConcurrentDictionary<string, EvaluatedPermissions>();
 
-        private static IDictionary<string, IMediaFilePermissions> _filePermissionsCache;
-        private static IDictionary<string, IMediaFolderPermissions> _folderPermissionsCache;
-
-        static MediaSecurityEvaluator()
+        public MediaSecurityEvaluator()
         {
-            DataEvents<IMediaFolderPermissions>.OnAfterAdd += Flush;
-            DataEvents<IMediaFolderPermissions>.OnAfterUpdate += Flush;
-            DataEvents<IMediaFolderPermissions>.OnDeleted += Flush;
-
-            DataEvents<IMediaFilePermissions>.OnAfterAdd += Flush;
-            DataEvents<IMediaFilePermissions>.OnAfterUpdate += Flush;
-            DataEvents<IMediaFilePermissions>.OnDeleted += Flush;
-
-            BuildPermissionsCache();
+            DataEvents<IDataPermissions>.OnAfterAdd += Flush;
+            DataEvents<IDataPermissions>.OnAfterUpdate += Flush;
+            DataEvents<IDataPermissions>.OnDeleted += Flush;
         }
 
-        private static void Flush(object sender, DataEventArgs e)
+        private void Flush(object sender, DataEventArgs e)
         {
-            Cache.Clear();
-
-            BuildPermissionsCache();
+            _cache.Clear();
         }
 
-        private static void BuildPermissionsCache()
+        public override EvaluatedPermissions GetEvaluatedPermissions(IData data)
         {
-            using (var data = new DataConnection())
+            var folder = data as IMediaFileFolder;
+            if (folder != null)
             {
-                _filePermissionsCache = data.Get<IMediaFilePermissions>().ToDictionary(p => p.KeyPath);
-                _folderPermissionsCache = data.Get<IMediaFolderPermissions>().ToDictionary(p => p.KeyPath);
+                return GetEvaluatedPermissions(folder);
             }
-        }
 
-        public bool HasAccess(IMediaFile file)
-        {
-            var e = GetEvaluatedPermissions(file);
-
-            return PermissionsFacade.HasAccess(e);
-        }
-
-        public bool HasAccess(IMediaFileFolder folder)
-        {
-            var e = GetEvaluatedPermissions(folder);
-
-            return PermissionsFacade.HasAccess(e);
-        }
-
-        public EvaluatedPermissions GetEvaluatedPermissions(IMediaFileFolder folder)
-        {
-            return Cache.GetOrAdd(folder.KeyPath, g =>
+            var file = data as IMediaFile;
+            if (file != null)
             {
-                IMediaFolderPermissions permission;
-                _folderPermissionsCache.TryGetValue(folder.KeyPath, out permission);
+                return GetEvaluatedPermissions(file);
+            }
+
+            return base.GetEvaluatedPermissions(data);
+        }
+
+        private EvaluatedPermissions GetEvaluatedPermissions(IMediaFileFolder folder)
+        {
+            return _cache.GetOrAdd(folder.KeyPath, g =>
+            {
+                IDataPermissions permission;
+                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out permission);
 
                 return EvaluatePermissions(permission, p => EvaluateInheritedPermissions(GetParent(folder), p));
             });
         }
 
-        public EvaluatedPermissions GetEvaluatedPermissions(IMediaFile file)
+        private EvaluatedPermissions GetEvaluatedPermissions(IMediaFile file)
         {
-            return Cache.GetOrAdd(file.KeyPath, g =>
+            return _cache.GetOrAdd(file.KeyPath, g =>
             {
-                IMediaFilePermissions permission;
-                _filePermissionsCache.TryGetValue(file.KeyPath, out permission);
+                IDataPermissions permission;
+                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(file), out permission);
 
                 return EvaluatePermissions(permission, p => EvaluateInheritedPermissions(GetParent(file), p));
             });
@@ -90,8 +74,8 @@ namespace CompositeC1Contrib.Security
 
             while (folder != null)
             {
-                IMediaFolderPermissions permissions;
-                if (_folderPermissionsCache.TryGetValue(folder.KeyPath, out permissions))
+                IDataPermissions permissions;
+                if (PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out permissions))
                 {
                     if (permissions.DisableInheritance)
                     {

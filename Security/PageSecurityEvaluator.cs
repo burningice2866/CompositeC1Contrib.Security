@@ -1,60 +1,46 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 using Composite.Data;
 using Composite.Data.Types;
 
+using CompositeC1Contrib.Security.Data;
 using CompositeC1Contrib.Security.Data.Types;
 
 namespace CompositeC1Contrib.Security
 {
-    public class PageSecurityEvaluator : SecurityEvaluator, ISecurityEvaluatorFor<IPage>
+    public class PageSecurityEvaluator : SecurityEvaluator
     {
-        private static readonly ConcurrentDictionary<Guid, EvaluatedPermissions> Cache = new ConcurrentDictionary<Guid, EvaluatedPermissions>();
-        private static IDictionary<Guid, IPagePermissions> _permissionsCache;
+        private readonly ConcurrentDictionary<Guid, EvaluatedPermissions> _cache = new ConcurrentDictionary<Guid, EvaluatedPermissions>();
 
-        static PageSecurityEvaluator()
+        public PageSecurityEvaluator()
         {
-            DataEvents<IPagePermissions>.OnAfterAdd += Flush;
-            DataEvents<IPagePermissions>.OnAfterUpdate += Flush;
-            DataEvents<IPagePermissions>.OnDeleted += Flush;
-
-            BuildPermissionsCache();
+            DataEvents<IDataPermissions>.OnAfterAdd += Flush;
+            DataEvents<IDataPermissions>.OnAfterUpdate += Flush;
+            DataEvents<IDataPermissions>.OnDeleted += Flush;
         }
 
-        private static void Flush(object sender, DataEventArgs e)
+        private void Flush(object sender, DataEventArgs e)
         {
-            Cache.Clear();
-
-            BuildPermissionsCache();
+            _cache.Clear();
         }
 
-        private static void BuildPermissionsCache()
+        public override EvaluatedPermissions GetEvaluatedPermissions(IData data)
         {
-            using (var data = new DataConnection())
+            var page = data as IPage;
+            if (page != null)
             {
-                _permissionsCache = data.Get<IPagePermissions>().ToDictionary(p => p.PageId);
+                return _cache.GetOrAdd(page.Id, g =>
+                {
+                    IDataPermissions permissions;
+                    PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(data), out permissions);
+
+                    return EvaluatePermissions(permissions, p => EvaluateInheritedPermissions(page.Id, p));
+                });
             }
-        }
 
-        public bool HasAccess(IPage page)
-        {
-            var e = GetEvaluatedPermissions(page);
-
-            return PermissionsFacade.HasAccess(e);
-        }
-
-        public EvaluatedPermissions GetEvaluatedPermissions(IPage page)
-        {
-            return Cache.GetOrAdd(page.Id, g =>
-            {
-                IPagePermissions permission;
-                _permissionsCache.TryGetValue(page.Id, out permission);
-
-                return EvaluatePermissions(permission, p => EvaluateInheritedPermissions(page.Id, p));
-            });
+            return base.GetEvaluatedPermissions(data);
         }
 
         private static void EvaluateInheritedPermissions(Guid current, EvaluatedPermissions evaluatedPermissions)
@@ -64,8 +50,12 @@ namespace CompositeC1Contrib.Security
 
             while ((current = PageManager.GetParentId(current)) != Guid.Empty)
             {
-                IPagePermissions permissions;
-                if (!_permissionsCache.TryGetValue(current, out permissions))
+                IDataPermissions permissions;
+                if (!PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey
+                {
+                    DataTypeId = typeof(IPage).GetImmutableTypeId(),
+                    DataId = current.ToString()
+                }, out permissions))
                 {
                     continue;
                 }

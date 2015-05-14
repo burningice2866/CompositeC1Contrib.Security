@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Security;
 
 using Composite.Data;
-using Composite.Data.Types;
 
 using CompositeC1Contrib.Security.Data.Types;
 using CompositeC1Contrib.Security.Web;
@@ -52,14 +51,9 @@ namespace CompositeC1Contrib.Security
             return HasAccess(page);
         }
 
-        public static bool HasAccess(IPage page)
+        public static bool HasAccess(IData data)
         {
-            return SecurityEvaluatorFactory.GetEvaluatorFor<IPage>().HasAccess(page);
-        }
-
-        public static bool HasAccess(IMediaFile media)
-        {
-            return SecurityEvaluatorFactory.GetEvaluatorFor<IMediaFile>().HasAccess(media);
+            return data.GetSecurityEvaluator().HasAccess(data);
         }
 
         public static EvaluatedPermissions EvaluatePermissions(IDataPermissions permissions)

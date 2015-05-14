@@ -8,7 +8,6 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
-using Composite.Data.Types;
 
 using CompositeC1Contrib.Security.C1Console.Workflows;
 
@@ -28,36 +27,18 @@ namespace CompositeC1Contrib.Security.C1Console
                 yield break;
             }
 
-            WorkflowActionToken actionToken = null;
+            var actionToken = new WorkflowActionToken(typeof(EditPermissionsWorkflow));
 
-            if (dataToken.Data is IPage)
+            yield return new ElementAction(new ActionHandle(actionToken))
             {
-                actionToken = new WorkflowActionToken(typeof(EditPagePermissionsWorkflow));
-            }
-
-            if (dataToken.Data is IMediaFile)
-            {
-                actionToken = new WorkflowActionToken(typeof(EditMediaFilePermissionsWorkflow));
-            }
-
-            if (dataToken.Data is IMediaFileFolder)
-            {
-                actionToken = new WorkflowActionToken(typeof(EditMediaFolderPermissionsWorkflow));
-            }
-
-            if (actionToken != null)
-            {
-                yield return new ElementAction(new ActionHandle(actionToken))
+                VisualData = new ActionVisualizedData
                 {
-                    VisualData = new ActionVisualizedData
-                    {
-                        Label = "Edit membership permissions",
-                        ToolTip = "Edit membership permissions",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                        ActionLocation = ActionLocation
-                    }
-                };
-            }
+                    Label = "Edit membership permissions",
+                    ToolTip = "Edit membership permissions",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = ActionLocation
+                }
+            };
         }
     }
 }
