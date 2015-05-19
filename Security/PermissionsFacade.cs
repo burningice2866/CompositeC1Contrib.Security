@@ -90,27 +90,18 @@ namespace CompositeC1Contrib.Security
             }
 
             var principal = Thread.CurrentPrincipal;
-            var userRoles = new List<string>();
+            var isAuthenticated = principal.Identity.IsAuthenticated;
 
-            if (principal.Identity.IsAuthenticated)
-            {
-                userRoles.AddRange(Roles.GetRolesForUser());
-
-                userRoles.Add(CompositeC1RoleProvider.AuthenticatedRole);
-            }
-            else
-            {
-                userRoles.Add(CompositeC1RoleProvider.AnonymousdRole);
-            }
-
-            if (permissions.DeniedRoled.Intersect(userRoles).Any())
+            if (permissions.DeniedRoled.Any(principal.IsInRole)
+                || permissions.DeniedRoled.Contains(isAuthenticated ? CompositeC1RoleProvider.AuthenticatedRole : CompositeC1RoleProvider.AnonymousdRole))
             {
                 return false;
             }
 
-            if (!permissions.AllowedRoles.Intersect(userRoles).Any())
+            if (permissions.AllowedRoles.Any(principal.IsInRole)
+                || permissions.AllowedRoles.Contains(isAuthenticated ? CompositeC1RoleProvider.AuthenticatedRole : CompositeC1RoleProvider.AnonymousdRole))
             {
-                return false;
+                return true;
             }
 
             return true;

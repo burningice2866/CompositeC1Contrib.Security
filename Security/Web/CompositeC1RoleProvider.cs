@@ -41,7 +41,7 @@ namespace CompositeC1Contrib.Security.Web
 
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
-            return new string[0];
+            throw new NotSupportedException();
         }
 
         public override string[] GetAllRoles()
@@ -51,17 +51,27 @@ namespace CompositeC1Contrib.Security.Web
 
         public override string[] GetRolesForUser(string username)
         {
-            return new [] { AuthenticatedRole };
+            if (String.IsNullOrEmpty(username))
+            {
+                return new[] { AnonymousdRole };
+            }
+
+            return new[] { AuthenticatedRole };
         }
 
         public override string[] GetUsersInRole(string roleName)
         {
-            return new string[0];
+            throw new NotSupportedException();
         }
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            return false;
+            if (String.IsNullOrEmpty(username))
+            {
+                return roleName == AnonymousdRole;
+            }
+
+            return roleName == AuthenticatedRole;
         }
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
