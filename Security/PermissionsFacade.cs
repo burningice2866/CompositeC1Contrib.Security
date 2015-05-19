@@ -104,7 +104,7 @@ namespace CompositeC1Contrib.Security
                 return true;
             }
 
-            return true;
+            return false;
         }
 
         public static Uri EnsureHttps(Uri uri)
