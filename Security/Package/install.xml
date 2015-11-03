@@ -5,8 +5,8 @@
   
   <mi:PackageInformation name="CompositeC1Contrib.Security" 
                          groupName="Contribution.CompositeC1Contrib" 
-                         version="0.7.5" author="@burningice" website="http://compositec1contrib.codeplex.com" 
-                         readMoreUrl="http://compositec1contrib.codeplex.com"
+                         version="0.8.0" author="@burningice" website="https://bitbucket.org/burningice/compositec1contrib.security" 
+                         readMoreUrl="https://bitbucket.org/burningice/compositec1contrib.security"
                          id="498bfe4a-6be4-4589-b8fb-7aadec82177d" 
                          canBeUninstalled="true" 
                          systemLocking="hard" 

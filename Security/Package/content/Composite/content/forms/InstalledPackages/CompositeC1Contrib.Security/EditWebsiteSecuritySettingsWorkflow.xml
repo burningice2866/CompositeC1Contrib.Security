@@ -1,0 +1,29 @@
+﻿<cms:formdefinition xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:f="http://www.composite.net/ns/function/1.0">
+  <cms:bindings>
+    <cms:binding name="WebsiteId" type="System.Guid" optional="true" />
+    <cms:binding name="LoginPageId" type="System.Guid" optional="true" />
+    <cms:binding name="ForgotPasswordPageId" type="System.Guid" optional="true" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="WebsiteId" />
+    </cms:layout.label>
+
+    <PlaceHolder Label="Settings">
+      <FieldGroup>
+        <DataReferenceTreeSelector Label="Login page" Help="" Handle="Composite.Management.PageIdSelectorDialog" DataType="Composite.Data.Types.IPage,Composite" NullValueAllowed="true">
+          <DataReferenceTreeSelector.Selected>
+            <cms:bind source="LoginPageId" />
+          </DataReferenceTreeSelector.Selected>
+        </DataReferenceTreeSelector>
+
+        <DataReferenceTreeSelector Label="Forgot password page" Help="" Handle="Composite.Management.PageIdSelectorDialog" DataType="Composite.Data.Types.IPage,Composite" NullValueAllowed="true">
+          <DataReferenceTreeSelector.Selected>
+            <cms:bind source="ForgotPasswordPageId" />
+          </DataReferenceTreeSelector.Selected>
+        </DataReferenceTreeSelector>
+      </FieldGroup>
+    </PlaceHolder>
+  </cms:layout>
+</cms:formdefinition>

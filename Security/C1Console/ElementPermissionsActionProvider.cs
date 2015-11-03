@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 
@@ -8,6 +9,7 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
+using Composite.Data.Types;
 
 using CompositeC1Contrib.Security.C1Console.Workflows;
 
@@ -21,15 +23,53 @@ namespace CompositeC1Contrib.Security.C1Console
 
         public IEnumerable<ElementAction> GetActions(EntityToken entityToken)
         {
+            var list = new List<ElementAction>();
+
             var dataToken = entityToken as DataEntityToken;
             if (dataToken == null)
             {
-                yield break;
+                return list;
             }
 
-            var actionToken = new WorkflowActionToken(typeof(EditPermissionsWorkflow));
+            AddWebsiteActions(dataToken, list);
+            AddDataActions(list);
 
-            yield return new ElementAction(new ActionHandle(actionToken))
+            return list;
+        }
+
+        private static void AddWebsiteActions(DataEntityToken dataToken, ICollection<ElementAction> list)
+        {
+            var pageData = dataToken.Data as IPage;
+            if (pageData == null)
+            {
+                return;
+            }
+
+            var parentId = PageManager.GetParentId(pageData.Id);
+            if (parentId != Guid.Empty)
+            {
+                return;
+            }
+
+            var actionToken = new WorkflowActionToken(typeof(EditWebsiteSecuritySettingsWorkflow));
+
+            list.Add(new ElementAction(new ActionHandle(actionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Edit security settings",
+                    ToolTip = "Edit security settings",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = ActionLocation
+                }
+            });
+        }
+
+        private static void AddDataActions(ICollection<ElementAction> list)
+        {
+            var actionToken = new WorkflowActionToken(typeof (EditPermissionsWorkflow));
+
+            list.Add(new ElementAction(new ActionHandle(actionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
@@ -38,7 +78,7 @@ namespace CompositeC1Contrib.Security.C1Console
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }
-            };
+            });
         }
     }
 }

@@ -8,7 +8,6 @@ using Composite.Data.DynamicTypes;
 using Composite.Data.Transactions;
 using Composite.Data.Types;
 
-
 using CompositeC1Contrib.Security.Data.Types;
 
 namespace CompositeC1Contrib.Security.Web
@@ -19,6 +18,7 @@ namespace CompositeC1Contrib.Security.Web
         {
             DynamicTypeManager.EnsureCreateStore(typeof(IMembershipUser));
             DynamicTypeManager.EnsureCreateStore(typeof(IDataPermissions));
+            DynamicTypeManager.EnsureCreateStore(typeof(IWebsiteSecuritySettings));
 
             MigrateOldData();
         }

@@ -77,11 +77,15 @@
     <Compile Include="C1Console\Workflows\AddUserWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\EditWebsiteSecuritySettingsWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditUserWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Configuration\SecurityConfiguration.cs" />
     <Compile Include="Data\CompoundIDataPermissionsKey.cs" />
+    <Compile Include="Data\Types\IWebsiteSecuritySettings.cs" />
     <Compile Include="Data\Types\IPermissions.cs" />
     <Compile Include="Data\Types\IMediaFilePermissions.cs" />
     <Compile Include="Data\Types\IMediaFolderPermissions.cs" />
@@ -124,6 +128,7 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.Security\EditPermissionsWorkflow.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.Security\EditWebsiteSecuritySettingsWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.Security\EditUserWorkflow.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.Security\InheritedPermissions.ascx">
       <SubType>ASPXCodeBehind</SubType>

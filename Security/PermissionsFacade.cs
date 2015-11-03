@@ -14,25 +14,49 @@ namespace CompositeC1Contrib.Security
 {
     public static class PermissionsFacade
     {
-        private static SiteMapNode _loginSiteMapNode;
+        private static readonly object Lock = new object();
+
+        private static IDictionary<Guid, IWebsiteSecuritySettings> _cache;
 
         public static SiteMapNode LoginSiteMapNode
         {
             get
             {
-                if (_loginSiteMapNode == null)
+                var settings = GetWebsiteSecuritySettings();
+                if (settings != null && settings.LoginPageId != null)
                 {
-                    var loginPage = FormsAuthentication.LoginUrl;
-                    if (loginPage.StartsWith("/"))
-                    {
-                        loginPage = loginPage.Remove(0, 1);
-                    }
-
-                    _loginSiteMapNode = SiteMap.Provider.FindSiteMapNodeFromKey(loginPage);
+                    return SiteMap.Provider.FindSiteMapNodeFromKey(settings.LoginPageId.Value.ToString());
                 }
 
-                return _loginSiteMapNode;
+                var loginPage = FormsAuthentication.LoginUrl;
+                if (loginPage.StartsWith("/"))
+                {
+                    loginPage = loginPage.Remove(0, 1);
+                }
+
+                return SiteMap.Provider.FindSiteMapNodeFromKey(loginPage);
             }
+        }
+
+        static PermissionsFacade()
+        {
+            DataEvents<IWebsiteSecuritySettings>.OnStoreChanged += (sender, e) =>
+            {
+                lock (Lock)
+                {
+                    _cache = null;
+                }
+            };
+        }
+
+        public static IWebsiteSecuritySettings GetWebsiteSecuritySettings()
+        {
+            var cache = GetCache();
+            var website = Guid.Parse(SiteMap.RootNode.Key);
+
+            IWebsiteSecuritySettings settings;
+
+            return cache.TryGetValue(website, out settings) ? settings : null;
         }
 
         public static Uri GetLoginUri()
@@ -91,15 +115,14 @@ namespace CompositeC1Contrib.Security
 
             var principal = Thread.CurrentPrincipal;
             var isAuthenticated = principal.Identity.IsAuthenticated;
+            var currentRole = isAuthenticated ? CompositeC1RoleProvider.AuthenticatedRole : CompositeC1RoleProvider.AnonymousdRole;
 
-            if (permissions.DeniedRoled.Any(principal.IsInRole)
-                || permissions.DeniedRoled.Contains(isAuthenticated ? CompositeC1RoleProvider.AuthenticatedRole : CompositeC1RoleProvider.AnonymousdRole))
+            if (permissions.DeniedRoled.Any(principal.IsInRole) || permissions.DeniedRoled.Contains(currentRole))
             {
                 return false;
             }
 
-            if (permissions.AllowedRoles.Any(principal.IsInRole)
-                || permissions.AllowedRoles.Contains(isAuthenticated ? CompositeC1RoleProvider.AuthenticatedRole : CompositeC1RoleProvider.AnonymousdRole))
+            if (permissions.AllowedRoles.Any(principal.IsInRole) || permissions.AllowedRoles.Contains(currentRole))
             {
                 return true;
             }
@@ -121,6 +144,25 @@ namespace CompositeC1Contrib.Security
             };
 
             return uriBuilder.Uri;
+        }
+
+        private static IDictionary<Guid, IWebsiteSecuritySettings> GetCache()
+        {
+            if (_cache == null)
+            {
+                lock (Lock)
+                {
+                    if (_cache == null)
+                    {
+                        using (var data = new DataConnection())
+                        {
+                            _cache = data.Get<IWebsiteSecuritySettings>().ToDictionary(s => s.WebsiteId);
+                        }
+                    }
+                }
+            }
+
+            return _cache;
         }
     }
 }
