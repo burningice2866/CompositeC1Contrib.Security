@@ -19,10 +19,12 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
     {
         private readonly bool _formDefinitionFileSet;
 
-        public EditUserWorkflow(string formDefinitionFile)
+        public EditUserWorkflow() : this(null) { }
+
+        protected EditUserWorkflow(string formDefinitionFile)
             : base(formDefinitionFile)
         {
-            _formDefinitionFileSet = true;
+            _formDefinitionFileSet = !String.IsNullOrEmpty(formDefinitionFile);
         }
 
         protected virtual MembershipUser GetMembershipUser()
@@ -238,13 +240,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
                 return null;
             }
 
-            var handler = Activator.CreateInstance(handlerType) as IEditProfileHandler;
-            if (handler == null)
-            {
-                return null;
-            }
-
-            return handler;
+            return Activator.CreateInstance(handlerType) as IEditProfileHandler;
         }
     }
 }
