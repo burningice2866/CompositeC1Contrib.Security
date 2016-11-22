@@ -62,7 +62,7 @@ namespace CompositeC1Contrib.Security
         public static Uri GetLoginUri()
         {
             var ctx = HttpContext.Current;
-            var returnUrl = EnsureHttps(ctx.Request.Url).AbsolutePath;
+            var returnUrl = EnsureHttps(ctx.Request.Url).PathAndQuery;
             var loginPage = EnsureHttps(new Uri(ctx.Request.Url, LoginSiteMapNode.Url));
 
             return new Uri(loginPage + "?ReturnUrl=" + HttpUtility.UrlEncode(returnUrl));

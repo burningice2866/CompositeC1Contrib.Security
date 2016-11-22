@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Security;
 
+using Composite.Core.Routing.Pages;
 using Composite.Core.WebClient.Renderings;
 using Composite.Core.WebClient.Renderings.Plugins.RenderingResponseHandler;
 using Composite.Data;
@@ -88,6 +89,13 @@ namespace CompositeC1Contrib.Security.Web
             {
                 result.RedirectRequesterTo = uri;
             }
+
+            Prevent404OnPathInfoRequest();
+        }
+
+        private static void Prevent404OnPathInfoRequest()
+        {
+            C1PageRoute.RegisterPathInfoUsage();
         }
     }
 }
