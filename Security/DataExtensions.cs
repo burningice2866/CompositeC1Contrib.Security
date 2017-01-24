@@ -2,7 +2,7 @@
 
 namespace CompositeC1Contrib.Security
 {
-    public static class ExtensionMethods
+    public static class DataExtensions
     {
         public static SecurityEvaluator GetSecurityEvaluator(this IData data)
         {

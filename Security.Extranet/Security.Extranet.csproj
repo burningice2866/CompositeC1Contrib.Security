@@ -30,12 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Composite, Version=4.3.5562.29799, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Composite.dll</HintPath>
+    <Reference Include="Composite, Version=4.2.5287.17495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.6.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.6.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="Composite.Workflows, Version=4.2.5287.17500, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -70,8 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Package\config\App_Data\Composite\composite.config" />
-    <None Include="Package\config\web.config" />
+    <None Include="Package\config\App_Data\Composite\composite.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Package\config\web.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Security\Security.csproj">

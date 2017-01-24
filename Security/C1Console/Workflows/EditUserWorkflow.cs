@@ -9,7 +9,6 @@ using Composite.C1Console.Forms.DataServices;
 using Composite.Core.ResourceSystem;
 using Composite.Core.Xml;
 
-using CompositeC1Contrib.Email;
 using CompositeC1Contrib.Security.Configuration;
 using CompositeC1Contrib.Workflows;
 
@@ -206,7 +205,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
                 return false;
             }
 
-            if (MailsFacade.ValidateMailAddress(email))
+            if (!MailAddressValidator.IsValid(email))
             {
                 ShowFieldMessage("Email", "Provided email is not valid");
 

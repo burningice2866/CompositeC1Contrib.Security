@@ -8,7 +8,6 @@ using System.Web.Security;
 using Composite;
 using Composite.Data;
 
-using CompositeC1Contrib.Email;
 using CompositeC1Contrib.Security.Data.Types;
 
 namespace CompositeC1Contrib.Security.Web
@@ -118,7 +117,7 @@ namespace CompositeC1Contrib.Security.Web
             Verify.ArgumentNotNullOrEmpty(username, "username");
             Verify.ArgumentNotNullOrEmpty(email, "email");
 
-            if (MailsFacade.ValidateMailAddress(email))
+            if (!MailAddressValidator.IsValid(email))
             {
                 status = MembershipCreateStatus.InvalidEmail;
 

@@ -3,7 +3,6 @@ using System.Web.Security;
 
 using Composite.C1Console.Workflow;
 
-using CompositeC1Contrib.Email;
 using CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
@@ -81,7 +80,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
                 return false;
             }
 
-            if (MailsFacade.ValidateMailAddress(email))
+            if (!MailAddressValidator.IsValid(email))
             {
                 ShowFieldMessage("Email", "Provided email is not valid");
 

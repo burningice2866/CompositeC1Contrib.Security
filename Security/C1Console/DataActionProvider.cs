@@ -1,59 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
-using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 
 using Composite.C1Console.Elements;
-using Composite.C1Console.Elements.Plugins.ElementActionProvider;
-using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 using Composite.Data.Types;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.Security.C1Console.Workflows;
 
 namespace CompositeC1Contrib.Security.C1Console
 {
-    [ConfigurationElementType(typeof(NonConfigurableElementActionProvider))]
-    public class ElementPermissionsActionProvider : IElementActionProvider
+    [Export(typeof(IElementActionProviderFor))]
+    public class DataActionProvider : IElementActionProviderFor
     {
         private static readonly ActionGroup ActionGroup = new ActionGroup("Default", ActionGroupPriority.PrimaryLow);
         private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = false, ActionGroup = ActionGroup };
 
-        public IEnumerable<ElementAction> GetActions(EntityToken entityToken)
+        public IEnumerable<Type> ProviderFor
         {
-            var list = new List<ElementAction>();
-
-            var dataToken = entityToken as DataEntityToken;
-            if (dataToken == null)
-            {
-                return list;
-            }
-
-            AddWebsiteActions(dataToken, list);
-            AddDataActions(list);
-
-            return list;
+            get { return new[] { typeof(DataEntityToken) }; }
         }
 
-        private static void AddWebsiteActions(DataEntityToken dataToken, ICollection<ElementAction> list)
+        public void AddActions(Element element)
+        {
+            var actions = Provide(element.ElementHandle.EntityToken);
+
+            element.AddAction(actions);
+        }
+
+        public IEnumerable<ElementAction> Provide(Composite.C1Console.Security.EntityToken entityToken)
+        {
+            var dataToken = (DataEntityToken)entityToken;
+
+            var websiteAction = CreateWebsiteAction(dataToken);
+            if (websiteAction != null)
+            {
+                yield return websiteAction;
+            }
+
+            var dataAction = CreateDataAction();
+            if (dataAction != null)
+            {
+                yield return dataAction;
+            }
+        }
+
+        private static ElementAction CreateWebsiteAction(DataEntityToken dataToken)
         {
             var pageData = dataToken.Data as IPage;
             if (pageData == null)
             {
-                return;
+                return null;
             }
 
             var parentId = PageManager.GetParentId(pageData.Id);
             if (parentId != Guid.Empty)
             {
-                return;
+                return null;
             }
 
             var actionToken = new WorkflowActionToken(typeof(EditWebsiteSecuritySettingsWorkflow));
 
-            list.Add(new ElementAction(new ActionHandle(actionToken))
+            return new ElementAction(new ActionHandle(actionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
@@ -62,14 +74,14 @@ namespace CompositeC1Contrib.Security.C1Console
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }
-            });
+            };
         }
 
-        private static void AddDataActions(ICollection<ElementAction> list)
+        private static ElementAction CreateDataAction()
         {
-            var actionToken = new WorkflowActionToken(typeof (EditPermissionsWorkflow));
+            var actionToken = new WorkflowActionToken(typeof(EditPermissionsWorkflow));
 
-            list.Add(new ElementAction(new ActionHandle(actionToken))
+            return new ElementAction(new ActionHandle(actionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
@@ -78,7 +90,7 @@ namespace CompositeC1Contrib.Security.C1Console
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }
-            });
+            };
         }
     }
 }

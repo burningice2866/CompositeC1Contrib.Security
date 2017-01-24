@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web.Security;
 
-using Composite.Data;
-
-using CompositeC1Contrib.Security.Extranet.Data.Types;
+using CompositeC1Contrib.Security.Web;
 
 namespace CompositeC1Contrib.Security.Extranet.C1Console
 {
@@ -11,10 +10,12 @@ namespace CompositeC1Contrib.Security.Extranet.C1Console
     {
         public static IList<string> GetRoleNames()
         {
-            using (var data = new DataConnection())
-            {
-                return data.Get<IExtranetRole>().Select(r => r.Name).ToList();
-            }
+            var roles = Roles.GetAllRoles().ToList();
+
+            roles.Remove(CompositeC1RoleProvider.AnonymousdRole);
+            roles.Remove(CompositeC1RoleProvider.AuthenticatedRole);
+
+            return roles;
         }
     }
 }
