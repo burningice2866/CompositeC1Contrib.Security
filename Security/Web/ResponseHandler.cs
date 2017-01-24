@@ -39,12 +39,16 @@ namespace CompositeC1Contrib.Security.Web
 
         private static void HandlePageRequest(RenderingResponseHandlerResult result, IPage page, HttpContext ctx)
         {
-            var isSecureConnection = ctx.Request.IsSecureConnection;
-            var isLoginPage = PermissionsFacade.LoginSiteMapNode != null && PermissionsFacade.LoginSiteMapNode.Key == page.Id.ToString();
+            var loginNode = PermissionsFacade.LoginSiteMapNode;
+            if (loginNode == null)
+            {
+                return;
+            }
 
+            var isLoginPage = loginNode.Key == page.Id.ToString();
             if (isLoginPage)
             {
-                if (FormsAuthentication.RequireSSL && !isSecureConnection)
+                if (FormsAuthentication.RequireSSL && !ctx.Request.IsSecureConnection)
                 {
                     EndResult(result, PermissionsFacade.EnsureHttps(ctx.Request.Url));
                 }

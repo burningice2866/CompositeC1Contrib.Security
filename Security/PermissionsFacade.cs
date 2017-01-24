@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,7 +17,7 @@ namespace CompositeC1Contrib.Security
     {
         private static readonly object Lock = new object();
 
-        private static IDictionary<Guid, IWebsiteSecuritySettings> _cache;
+        private static ConcurrentDictionary<Guid, IWebsiteSecuritySettings> _cache = new ConcurrentDictionary<Guid, IWebsiteSecuritySettings>();
 
         public static SiteMapNode LoginSiteMapNode
         {
@@ -34,7 +35,13 @@ namespace CompositeC1Contrib.Security
                     loginPage = loginPage.Remove(0, 1);
                 }
 
-                return SiteMap.Provider.FindSiteMapNodeFromKey(loginPage);
+                Guid loginPageId;
+                if (Guid.TryParse(loginPage, out loginPageId))
+                {
+                    return SiteMap.Provider.FindSiteMapNodeFromKey(loginPage);
+                }
+
+                return null;
             }
         }
 
@@ -42,28 +49,34 @@ namespace CompositeC1Contrib.Security
         {
             DataEvents<IWebsiteSecuritySettings>.OnStoreChanged += (sender, e) =>
             {
-                lock (Lock)
-                {
-                    _cache = null;
-                }
+                _cache.Clear();
             };
         }
 
         public static IWebsiteSecuritySettings GetWebsiteSecuritySettings()
         {
-            var cache = GetCache();
             var website = Guid.Parse(SiteMap.RootNode.Key);
 
-            IWebsiteSecuritySettings settings;
-
-            return cache.TryGetValue(website, out settings) ? settings : null;
+            return _cache.GetOrAdd(website, g =>
+            {
+                using (var data = new DataConnection())
+                {
+                    return data.Get<IWebsiteSecuritySettings>().SingleOrDefault(_ => _.WebsiteId == g);
+                }
+            });
         }
 
         public static Uri GetLoginUri()
         {
+            var loginNode = LoginSiteMapNode;
+            if (loginNode == null)
+            {
+                return null;
+            }
+
             var ctx = HttpContext.Current;
             var returnUrl = EnsureHttps(ctx.Request.Url).PathAndQuery;
-            var loginPage = EnsureHttps(new Uri(ctx.Request.Url, LoginSiteMapNode.Url));
+            var loginPage = EnsureHttps(new Uri(ctx.Request.Url, loginNode.Url));
 
             return new Uri(loginPage + "?ReturnUrl=" + HttpUtility.UrlEncode(returnUrl));
         }
@@ -144,25 +157,6 @@ namespace CompositeC1Contrib.Security
             };
 
             return uriBuilder.Uri;
-        }
-
-        private static IDictionary<Guid, IWebsiteSecuritySettings> GetCache()
-        {
-            if (_cache == null)
-            {
-                lock (Lock)
-                {
-                    if (_cache == null)
-                    {
-                        using (var data = new DataConnection())
-                        {
-                            _cache = data.Get<IWebsiteSecuritySettings>().ToDictionary(s => s.WebsiteId);
-                        }
-                    }
-                }
-            }
-
-            return _cache;
         }
     }
 }
