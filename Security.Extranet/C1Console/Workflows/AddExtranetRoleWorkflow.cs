@@ -44,7 +44,7 @@ namespace CompositeC1Contrib.Security.Extranet.C1Console.Workflows
 
             using (var data = new DataConnection())
             {
-                var roleExists = data.Get<IExtranetRole>().Any(r => r.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+                var roleExists = data.Get<IExtranetRole>().Any(r => String.Compare(r.Name, name, StringComparison.OrdinalIgnoreCase) == 0);
                 if (roleExists)
                 {
                     ShowFieldMessage("Name", "Role already exists");
