@@ -9,15 +9,15 @@ namespace CompositeC1Contrib.Security.Configuration
         [ConfigurationProperty("profileResolver", IsRequired = false)]
         public string ProfileResolver
         {
-            get { return (string)this["profileResolver"]; }
-            set { this["profileResolver"] = value; }
+            get => (string)this["profileResolver"];
+            set => this["profileResolver"] = value;
         }
 
         [ConfigurationProperty("editProfileHandler", IsRequired = false)]
         public string EditProfileHandler
         {
-            get { return (string)this["editProfileHandler"]; }
-            set { this["editProfileHandler"] = value; }
+            get => (string)this["editProfileHandler"];
+            set => this["editProfileHandler"] = value;
         }
 
         public static SecuritySection GetSection()

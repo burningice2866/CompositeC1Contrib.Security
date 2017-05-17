@@ -11,15 +11,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
 {
     public class EditWebsiteSecuritySettingsWorkflow : Basic1StepDocumentWorkflow
     {
-        private IPage Page
-        {
-            get
-            {
-                var dataToken = (DataEntityToken)EntityToken;
-
-                return (IPage)dataToken.Data;
-            }
-        }
+        private IPage Page => (IPage)((DataEntityToken)EntityToken).Data;
 
         public EditWebsiteSecuritySettingsWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.Security\\EditWebsiteSecuritySettingsWorkflow.xml") { }
 

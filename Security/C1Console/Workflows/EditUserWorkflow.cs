@@ -63,18 +63,9 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
             var markupProvider = new FormDefinitionFileMarkupProvider("\\InstalledPackages\\CompositeC1Contrib.Security\\EditUserWorkflow.xml");
 
             var formDocument = XDocument.Load(markupProvider.GetReader());
-            if (formDocument.Root == null)
-            {
-                return;
-            }
+            var layoutXElement = formDocument.Root?.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
 
-            var layoutXElement = formDocument.Root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
-            if (layoutXElement == null)
-            {
-                return;
-            }
-
-            var tabPanelElements = layoutXElement.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
+            var tabPanelElements = layoutXElement?.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
             if (tabPanelElements == null)
             {
                 return;
@@ -138,7 +129,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
             var isApproved = GetBinding<bool>("IsApproved");
             var isLockedOut = GetBinding<bool>("IsLockedOut");
 
-            bool isDirty = false;
+            var isDirty = false;
 
             if (email != user.Email)
             {
@@ -228,7 +219,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
         private static IEditProfileHandler GetEditProfilerHandler()
         {
             var section = SecuritySection.GetSection();
-            if (section == null || String.IsNullOrEmpty(section.EditProfileHandler))
+            if (String.IsNullOrEmpty(section?.EditProfileHandler))
             {
                 return null;
             }

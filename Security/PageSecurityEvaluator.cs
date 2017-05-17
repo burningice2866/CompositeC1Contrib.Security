@@ -33,8 +33,7 @@ namespace CompositeC1Contrib.Security
             {
                 return _cache.GetOrAdd(page.Id, g =>
                 {
-                    IDataPermissions permissions;
-                    PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(data), out permissions);
+                    PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(data), out IDataPermissions permissions);
 
                     return EvaluatePermissions(permissions, p => EvaluateInheritedPermissions(page.Id, p));
                 });
@@ -50,12 +49,7 @@ namespace CompositeC1Contrib.Security
 
             while ((current = PageManager.GetParentId(current)) != Guid.Empty)
             {
-                IDataPermissions permissions;
-                if (!PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey
-                {
-                    DataTypeId = typeof(IPage).GetImmutableTypeId(),
-                    DataId = current.ToString()
-                }, out permissions))
+                if (!PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(typeof(IPage).GetImmutableTypeId(), current.ToString()), out IDataPermissions permissions))
                 {
                     continue;
                 }

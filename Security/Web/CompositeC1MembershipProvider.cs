@@ -19,55 +19,25 @@ namespace CompositeC1Contrib.Security.Web
 
         public override string ApplicationName { get; set; }
 
-        public override int MaxInvalidPasswordAttempts
-        {
-            get { return int.MaxValue; }
-        }
+        public override int MaxInvalidPasswordAttempts => int.MaxValue;
 
-        public override int MinRequiredNonAlphanumericCharacters
-        {
-            get { throw new NotSupportedException(); }
-        }
+        public override int MinRequiredNonAlphanumericCharacters => throw new NotSupportedException();
 
-        public override int MinRequiredPasswordLength
-        {
-            get { return 6; }
-        }
+        public override int MinRequiredPasswordLength => 6;
 
-        public override int PasswordAttemptWindow
-        {
-            get { throw new NotSupportedException(); }
-        }
+        public override int PasswordAttemptWindow => throw new NotSupportedException();
 
-        public override MembershipPasswordFormat PasswordFormat
-        {
-            get { return MembershipPasswordFormat.Hashed; }
-        }
+        public override MembershipPasswordFormat PasswordFormat => MembershipPasswordFormat.Hashed;
 
-        public override string PasswordStrengthRegularExpression
-        {
-            get { throw new NotSupportedException(); }
-        }
+        public override string PasswordStrengthRegularExpression => throw new NotSupportedException();
 
-        public override bool RequiresQuestionAndAnswer
-        {
-            get { return false; }
-        }
+        public override bool RequiresQuestionAndAnswer => false;
 
-        public override bool RequiresUniqueEmail
-        {
-            get { return true; }
-        }
+        public override bool RequiresUniqueEmail => true;
 
-        public override bool EnablePasswordReset
-        {
-            get { return true; }
-        }
+        public override bool EnablePasswordReset => true;
 
-        public override bool EnablePasswordRetrieval
-        {
-            get { return false; }
-        }
+        public override bool EnablePasswordRetrieval => false;
 
         public override void Initialize(string name, NameValueCollection config)
         {
@@ -142,7 +112,7 @@ namespace CompositeC1Contrib.Security.Web
                     return null;
                 }
 
-                var id = providerUserKey == null ? Guid.NewGuid() : (Guid)providerUserKey;
+                var id = (Guid?)providerUserKey ?? Guid.NewGuid();
 
                 existingUser = data.Get<IMembershipUser>().SingleOrDefault(u => u.Id == id);
                 if (existingUser != null)
@@ -231,7 +201,7 @@ namespace CompositeC1Contrib.Security.Web
         {
             if (!(providerUserKey is Guid))
             {
-                throw new ArgumentException("UserKey has to be of type Guid", "providerUserKey");
+                throw new ArgumentException("UserKey has to be of type Guid", nameof(providerUserKey));
             }
 
             using (var data = new DataConnection())
@@ -288,15 +258,15 @@ namespace CompositeC1Contrib.Security.Web
 
         public override void UpdateUser(MembershipUser user)
         {
-            Verify.ArgumentNotNullOrEmpty(user.UserName, "user");
-            Verify.ArgumentNotNullOrEmpty(user.Email, "user");
+            Verify.ArgumentNotNullOrEmpty(user.UserName, nameof(user));
+            Verify.ArgumentNotNullOrEmpty(user.Email, nameof(user));
 
             using (var data = new DataConnection())
             {
                 var c1User = data.Get<IMembershipUser>().SingleOrDefault(u => u.Id == (Guid)user.ProviderUserKey);
                 if (c1User == null)
                 {
-                    throw new ArgumentException(String.Format("Provider user key '{0}' doesn't exist", user.ProviderUserKey), "user");
+                    throw new ArgumentException($"Provider user key '{user.ProviderUserKey}' doesn't exist", nameof(user));
                 }
 
                 if (!user.Email.Equals(c1User.Email, StringComparison.OrdinalIgnoreCase))
@@ -304,7 +274,7 @@ namespace CompositeC1Contrib.Security.Web
                     var exists = data.Get<IMembershipUser>().Where(u => u.IsApproved).Any(EmailPredicate(user.Email));
                     if (exists)
                     {
-                        throw new ArgumentException(String.Format("Email address '{0}' already exist", user.Email), "user");
+                        throw new ArgumentException($"Email address '{user.Email}' already exist", nameof(user));
                     }
 
                     c1User.Email = user.Email;
@@ -390,10 +360,10 @@ namespace CompositeC1Contrib.Security.Web
                 user.IsApproved,
                 user.IsLockedOut,
                 user.CreationDate.ToLocalTime(),
-                user.LastLoginDate == null ? DateTime.MinValue : user.LastLoginDate.Value.ToLocalTime(),
-                user.LastActivityDate == null ? DateTime.MinValue : user.LastActivityDate.Value.ToLocalTime(),
-                user.LastPasswordChangedDate == null ? DateTime.MinValue : user.LastPasswordChangedDate.Value.ToLocalTime(),
-                user.LastLockoutDate == null ? DateTime.MinValue : user.LastLockoutDate.Value.ToLocalTime());
+                user.LastLoginDate?.ToLocalTime() ?? DateTime.MinValue,
+                user.LastActivityDate?.ToLocalTime() ?? DateTime.MinValue,
+                user.LastPasswordChangedDate?.ToLocalTime() ?? DateTime.MinValue,
+                user.LastLockoutDate?.ToLocalTime() ?? DateTime.MinValue);
         }
 
         private static string GeneratePassword(int passwordLength)

@@ -31,11 +31,7 @@ namespace CompositeC1Contrib.Security
         {
             using (var data = new DataConnection())
             {
-                PermissionsCache = data.Get<IDataPermissions>().ToDictionary(p => new CompoundIDataPermissionsKey
-                {
-                    DataTypeId = p.DataTypeId,
-                    DataId = p.DataId
-                });
+                PermissionsCache = data.Get<IDataPermissions>().ToDictionary(p => new CompoundIDataPermissionsKey(p.DataTypeId, p.DataId));
             }
         }
 
@@ -48,16 +44,15 @@ namespace CompositeC1Contrib.Security
 
         public virtual EvaluatedPermissions GetEvaluatedPermissions(IData data)
         {
-            IDataPermissions permissions;
-            PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(data), out permissions);
+            PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(data), out IDataPermissions permissions);
 
             return EvaluatePermissions(permissions, null);
         }
 
         protected EvaluatedPermissions EvaluatePermissions(IDataPermissions permissions, Action<EvaluatedPermissions> evaluateMethod)
         {
-            var allowedRoles = permissions == null ? null : permissions.AllowedRoles;
-            var deniedRoles = permissions == null ? null : permissions.DeniedRoles;
+            var allowedRoles = permissions?.AllowedRoles;
+            var deniedRoles = permissions?.DeniedRoles;
 
             var evaluatedPermissions = new EvaluatedPermissions
             {
@@ -67,10 +62,7 @@ namespace CompositeC1Contrib.Security
 
             if (permissions == null || !permissions.DisableInheritance)
             {
-                if (evaluateMethod != null)
-                {
-                    evaluateMethod(evaluatedPermissions);
-                }
+                evaluateMethod?.Invoke(evaluatedPermissions);
             }
 
             return evaluatedPermissions;

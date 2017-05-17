@@ -15,14 +15,11 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.Actions
     {
         private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Edit, PermissionType.Administrate };
 
-        public override IEnumerable<PermissionType> PermissionTypes
-        {
-            get { return _permissionTypes; }
-        }
+        public override IEnumerable<PermissionType> PermissionTypes => _permissionTypes;
 
         public override string Serialize()
         {
-            return String.Empty;
+            return nameof(ApproveUserActionToken);
         }
 
         public static ActionToken Deserialize(string serializedData)
@@ -36,6 +33,10 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var user = Membership.GetUser(entityToken.Id);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
 
             user.IsApproved = true;
 

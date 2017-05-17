@@ -49,8 +49,7 @@ namespace CompositeC1Contrib.Security
         {
             return _cache.GetOrAdd(folder.KeyPath, g =>
             {
-                IDataPermissions permission;
-                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out permission);
+                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out IDataPermissions permission);
 
                 return EvaluatePermissions(permission, p => EvaluateInheritedPermissions(GetParent(folder), p));
             });
@@ -60,8 +59,7 @@ namespace CompositeC1Contrib.Security
         {
             return _cache.GetOrAdd(file.KeyPath, g =>
             {
-                IDataPermissions permission;
-                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(file), out permission);
+                PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(file), out IDataPermissions permission);
 
                 return EvaluatePermissions(permission, p => EvaluateInheritedPermissions(GetParent(file), p));
             });
@@ -74,8 +72,7 @@ namespace CompositeC1Contrib.Security
 
             while (folder != null)
             {
-                IDataPermissions permissions;
-                if (PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out permissions))
+                if (PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out IDataPermissions permissions))
                 {
                     if (permissions.DisableInheritance)
                     {

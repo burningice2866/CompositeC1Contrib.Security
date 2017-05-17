@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Composite.Data;
 using Composite.Data.Types;
 
@@ -23,13 +24,7 @@ namespace CompositeC1Contrib.Security
 
         public static SecurityEvaluator GetEvaluatorFor(Type type)
         {
-            SecurityEvaluator evaluator;
-            if (!Evaluators.TryGetValue(type, out evaluator))
-            {
-                return new SecurityEvaluator();
-            }
-
-            return evaluator;
+            return Evaluators.TryGetValue(type, out SecurityEvaluator evaluator) ? evaluator : new SecurityEvaluator();
         }
     }
 }

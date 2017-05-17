@@ -12,15 +12,9 @@ namespace CompositeC1Contrib.Security
         public string[] InheritedAllowedRules { get; set; }
         public string[] InheritedDenieddRules { get; set; }
 
-        public string[] AllowedRoles
-        {
-            get { return ExplicitAllowedRoles.Concat(InheritedAllowedRules).ToArray(); }
-        }
+        public string[] AllowedRoles => ExplicitAllowedRoles.Concat(InheritedAllowedRules).ToArray();
 
-        public string[] DeniedRoled
-        {
-            get { return ExplicitDeniedRoled.Concat(InheritedDenieddRules).ToArray(); }
-        }
+        public string[] DeniedRoled => ExplicitDeniedRoled.Concat(InheritedDenieddRules).ToArray();
 
         public EvaluatedPermissions()
         {

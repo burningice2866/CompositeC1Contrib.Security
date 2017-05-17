@@ -12,10 +12,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.Actions
     {
         private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Edit, PermissionType.Administrate };
 
-        public override IEnumerable<PermissionType> PermissionTypes
-        {
-            get { return _permissionTypes; }
-        }
+        public override IEnumerable<PermissionType> PermissionTypes => _permissionTypes;
 
         public override string Serialize()
         {

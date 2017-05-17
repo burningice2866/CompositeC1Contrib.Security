@@ -20,10 +20,7 @@ namespace CompositeC1Contrib.Security.C1Console
         private static readonly ActionGroup ActionGroup = new ActionGroup("Default", ActionGroupPriority.PrimaryLow);
         private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = false, ActionGroup = ActionGroup };
 
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(DataEntityToken) }; }
-        }
+        public IEnumerable<Type> ProviderFor => new[] { typeof(DataEntityToken) };
 
         public void AddActions(Element element)
         {

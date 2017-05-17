@@ -8,25 +8,13 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens
     [SecurityAncestorProvider(typeof(FolderAncestorProvider))]
     public class FolderEntityToken : EntityToken
     {
-        private readonly string _id;
-        public override string Id
-        {
-            get { return _id; }
-        }
-
-        public override string Source
-        {
-            get { return String.Empty; }
-        }
-
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Id { get; }
+        public override string Source => String.Empty;
+        public override string Type => String.Empty;
 
         public FolderEntityToken(string name)
         {
-            _id = name;
+            Id = name;
         }
 
         public override string Serialize()
@@ -36,11 +24,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens
 
         public static EntityToken Deserialize(string serializedEntityToken)
         {
-            string type;
-            string source;
-            string id;
-
-            DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out string _, out string _, out string id);
 
             return new FolderEntityToken(id);
         }

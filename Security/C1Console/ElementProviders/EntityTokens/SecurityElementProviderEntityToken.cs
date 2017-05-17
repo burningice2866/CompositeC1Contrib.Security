@@ -8,20 +8,9 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens
     [SecurityAncestorProvider(typeof(NoAncestorSecurityAncestorProvider))]
     public class SecurityElementProviderEntityToken : EntityToken
     {
-        public override string Id
-        {
-            get { return "SecurityElementProviderEntityToken"; }
-        }
-
-        public override string Source
-        {
-            get { return String.Empty; }
-        }
-
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Id => nameof(SecurityElementProviderEntityToken);
+        public override string Source => String.Empty;
+        public override string Type => String.Empty;
 
         public static EntityToken Deserialize(string serializedData)
         {
@@ -30,7 +19,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens
 
         public override string Serialize()
         {
-            return String.Empty;
+            return Id;
         }
     }
 }

@@ -6,15 +6,15 @@ namespace CompositeC1Contrib.Security.Data
 {
     public class CompoundIDataPermissionsKey : IEquatable<CompoundIDataPermissionsKey>
     {
-        public Guid DataTypeId { get; set; }
-        public string DataId { get; set; }
+        public Guid DataTypeId { get; }
+        public string DataId { get; }
 
-        public CompoundIDataPermissionsKey() { }
+        public CompoundIDataPermissionsKey(IData data) : this(data.GetImmutableTypeId(), data.GetUniqueKey().ToString()) { }
 
-        public CompoundIDataPermissionsKey(IData data)
+        public CompoundIDataPermissionsKey(Guid dataTypeId, string dataId)
         {
-            DataTypeId = data.GetImmutableTypeId();
-            DataId = data.GetUniqueKey().ToString();
+            DataTypeId = dataTypeId;
+            DataId = dataId;
         }
 
         public override int GetHashCode()
@@ -30,7 +30,7 @@ namespace CompositeC1Contrib.Security.Data
             }
 
             var other = obj as CompoundIDataPermissionsKey;
-            
+
             return other != null && Equals(other);
         }
 

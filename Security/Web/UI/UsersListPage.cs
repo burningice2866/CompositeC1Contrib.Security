@@ -45,10 +45,7 @@ namespace CompositeC1Contrib.Security.Web.UI
                 consoleId);
         }
 
-        protected string Type
-        {
-            get { return Request.QueryString["type"]; }
-        }
+        protected string Type => Request.QueryString["type"];
 
         protected void OnFilter(object sender, EventArgs e)
         {
@@ -108,9 +105,8 @@ namespace CompositeC1Contrib.Security.Web.UI
             var pageNumber = int.Parse(PageNumber.Text);
             var pageSize = int.Parse(PageSize.SelectedValue);
 
-            int count;
 
-            var users = Membership.GetAllUsers(0, int.MaxValue, out count).Cast<MembershipUser>();
+            var users = Membership.GetAllUsers(0, int.MaxValue, out int count).Cast<MembershipUser>();
 
             switch (Type)
             {

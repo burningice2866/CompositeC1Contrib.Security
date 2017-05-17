@@ -13,8 +13,8 @@ namespace CompositeC1Contrib.Security
         /// <returns>The hashed password as a 128 character hex string</returns>
         public static string HashPassword(string password)
         {
-            string salt = GetRandomSalt();
-            string hash = Sha256Hex(salt + password);
+            var salt = GetRandomSalt();
+            var hash = Sha256Hex(salt + password);
 
             return salt + hash;
         }
@@ -30,9 +30,9 @@ namespace CompositeC1Contrib.Security
             if (correctHash.Length < 128)
                 throw new ArgumentException("Hash must be 128 hex characters!", "correctHash");
 
-            string salt = correctHash.Substring(0, 64);
-            string validHash = correctHash.Substring(64, 64);
-            string passHash = Sha256Hex(salt + password);
+            var salt = correctHash.Substring(0, 64);
+            var validHash = correctHash.Substring(64, 64);
+            var passHash = Sha256Hex(salt + password);
 
             return String.Compare(validHash, passHash) == 0;
         }
@@ -41,7 +41,7 @@ namespace CompositeC1Contrib.Security
         private static string Sha256Hex(string toHash)
         {
             var hash = new SHA256Managed();
-            var utf8 = UTF8Encoding.UTF8.GetBytes(toHash);
+            var utf8 = Encoding.UTF8.GetBytes(toHash);
 
             return BytesToHex(hash.ComputeHash(utf8));
         }
@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.Security
         private static string BytesToHex(byte[] toConvert)
         {
             var s = new StringBuilder(toConvert.Length * 2);
-            foreach (byte b in toConvert)
+            foreach (var b in toConvert)
             {
                 s.Append(b.ToString("x2"));
             }

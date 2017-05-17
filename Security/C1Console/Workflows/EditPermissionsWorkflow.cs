@@ -12,15 +12,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
     {
         public EditPermissionsWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.Security\\EditPermissionsWorkflow.xml") { }
 
-        protected IData DataEntity
-        {
-            get
-            {
-                var dataToken = (DataEntityToken)EntityToken;
-
-                return dataToken.Data;
-            }
-        }
+        protected IData DataEntity => ((DataEntityToken)EntityToken).Data;
 
         public override void OnInitialize(object sender, EventArgs e)
         {

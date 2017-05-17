@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.Security
         static ProfileFacade()
         {
             var section = SecuritySection.GetSection();
-            if (section == null || String.IsNullOrEmpty(section.ProfileResolver))
+            if (String.IsNullOrEmpty(section?.ProfileResolver))
             {
                 return;
             }

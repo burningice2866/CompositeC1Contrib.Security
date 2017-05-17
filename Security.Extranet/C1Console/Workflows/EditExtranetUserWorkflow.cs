@@ -43,7 +43,7 @@ namespace CompositeC1Contrib.Security.Extranet.C1Console.Workflows
             var isApproved = GetBinding<bool>("IsApproved");
             var isLockedOut = GetBinding<bool>("IsLockedOut");
 
-            bool isDirty = false;
+            var isDirty = false;
 
             if (email != user.Email)
             {
@@ -86,11 +86,6 @@ namespace CompositeC1Contrib.Security.Extranet.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             SetSaveStatus(true);
-        }
-
-        public override bool Validate()
-        {
-            return base.Validate();
         }
     }
 }

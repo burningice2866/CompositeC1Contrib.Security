@@ -64,10 +64,5 @@ namespace CompositeC1Contrib.Security.Extranet.C1Console.Workflows
                 ExecuteAction(profile.GetDataEntityToken(), editWorkflowToken);
             }
         }
-
-        public override bool Validate()
-        {
-            return base.Validate();
-        }
     }
 }

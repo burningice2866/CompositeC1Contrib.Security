@@ -1,6 +1,4 @@
-﻿using System;
-
-using Composite.Data;
+﻿using Composite.Data;
 using Composite.Data.Hierarchy;
 using Composite.Data.Hierarchy.DataAncestorProviders;
 

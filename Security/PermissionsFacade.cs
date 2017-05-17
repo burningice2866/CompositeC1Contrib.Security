@@ -15,9 +15,7 @@ namespace CompositeC1Contrib.Security
 {
     public static class PermissionsFacade
     {
-        private static readonly object Lock = new object();
-
-        private static ConcurrentDictionary<Guid, IWebsiteSecuritySettings> _cache = new ConcurrentDictionary<Guid, IWebsiteSecuritySettings>();
+        private static readonly ConcurrentDictionary<Guid, IWebsiteSecuritySettings> Cache = new ConcurrentDictionary<Guid, IWebsiteSecuritySettings>();
 
         public static SiteMapNode LoginSiteMapNode
         {
@@ -35,8 +33,7 @@ namespace CompositeC1Contrib.Security
                     loginPage = loginPage.Remove(0, 1);
                 }
 
-                Guid loginPageId;
-                if (Guid.TryParse(loginPage, out loginPageId))
+                if (Guid.TryParse(loginPage, out Guid _))
                 {
                     return SiteMap.Provider.FindSiteMapNodeFromKey(loginPage);
                 }
@@ -49,7 +46,7 @@ namespace CompositeC1Contrib.Security
         {
             DataEvents<IWebsiteSecuritySettings>.OnStoreChanged += (sender, e) =>
             {
-                _cache.Clear();
+                Cache.Clear();
             };
         }
 
@@ -57,7 +54,7 @@ namespace CompositeC1Contrib.Security
         {
             var website = Guid.Parse(SiteMap.RootNode.Key);
 
-            return _cache.GetOrAdd(website, g =>
+            return Cache.GetOrAdd(website, g =>
             {
                 using (var data = new DataConnection())
                 {
@@ -111,7 +108,7 @@ namespace CompositeC1Contrib.Security
 
         public static IEnumerable<string> Split(string roles)
         {
-            return roles == null ? new string[0] : roles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return roles?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
         }
 
         public static bool HasAccess(EvaluatedPermissions permissions)

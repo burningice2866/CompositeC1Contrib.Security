@@ -9,7 +9,6 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Core.WebClient;
-using Composite.Data;
 
 using CompositeC1Contrib.Security.C1Console.ElementProviders.EntityTokens;
 using CompositeC1Contrib.Security.C1Console.Workflows;
@@ -23,11 +22,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders
 
         private const string UrlTemplate = "InstalledPackages/CompositeC1Contrib.Security/UsersList.aspx?type={0}";
 
-        private ElementProviderContext _context;
-        public ElementProviderContext Context
-        {
-            set { _context = value; }
-        }
+        public ElementProviderContext Context { private get; set; }
 
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
         {
@@ -39,18 +34,17 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders
                 {
                     case "Users":
                         {
-                            int count;
-                            var users = Membership.GetAllUsers(0, int.MaxValue, out count).Cast<MembershipUser>().ToList();
+                            var users = Membership.GetAllUsers(0, int.MaxValue, out int count).Cast<MembershipUser>().ToList();
 
                             var approvedCount = users.Count(u => u.IsApproved);
 
-                            var approvedUsersElementHandle = _context.CreateElementHandle(new FolderEntityToken("Approved"));
+                            var approvedUsersElementHandle = Context.CreateElementHandle(new FolderEntityToken("Approved"));
                             var approvedUsersElement = new Element(approvedUsersElementHandle)
                             {
                                 VisualData = new ElementVisualizedData
                                 {
-                                    Label = String.Format("Approved ({0})", approvedCount),
-                                    ToolTip = String.Format("Approved ({0})", approvedCount),
+                                    Label = $"Approved ({approvedCount})",
+                                    ToolTip = $"Approved ({approvedCount})",
                                     HasChildren = false,
                                     Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
                                     OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
@@ -63,13 +57,13 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders
 
                             var notApprovedCount = users.Count(u => !u.IsApproved);
 
-                            var notApprovedUsersElementHandle = _context.CreateElementHandle(new FolderEntityToken("NotApproved"));
+                            var notApprovedUsersElementHandle = Context.CreateElementHandle(new FolderEntityToken("NotApproved"));
                             var notApprovedUsersElement = new Element(notApprovedUsersElementHandle)
                             {
                                 VisualData = new ElementVisualizedData
                                 {
-                                    Label = String.Format("Not approved ({0})", notApprovedCount),
-                                    ToolTip = String.Format("Not approved ({0})", notApprovedCount),
+                                    Label = $"Not approved ({notApprovedCount})",
+                                    ToolTip = $"Not approved ({notApprovedCount})",
                                     HasChildren = false,
                                     Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
                                     OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
@@ -87,7 +81,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders
 
             if (entityToken is SecurityElementProviderEntityToken)
             {
-                var usersElementHandle = _context.CreateElementHandle(new FolderEntityToken("Users"));
+                var usersElementHandle = Context.CreateElementHandle(new FolderEntityToken("Users"));
                 var usersElement = new Element(usersElementHandle)
                 {
                     VisualData = new ElementVisualizedData
@@ -136,7 +130,7 @@ namespace CompositeC1Contrib.Security.C1Console.ElementProviders
 
         public IEnumerable<Element> GetRoots(SearchToken searchToken)
         {
-            var elementHandle = _context.CreateElementHandle(new SecurityElementProviderEntityToken());
+            var elementHandle = Context.CreateElementHandle(new SecurityElementProviderEntityToken());
             var rootElement = new Element(elementHandle)
             {
                 VisualData = new ElementVisualizedData
