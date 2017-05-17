@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 using Composite.Data;
 using Composite.Data.Types;
@@ -28,8 +29,7 @@ namespace CompositeC1Contrib.Security
 
         public override EvaluatedPermissions GetEvaluatedPermissions(IData data)
         {
-            var page = data as IPage;
-            if (page != null)
+            if (data is IPage page)
             {
                 return _cache.GetOrAdd(page.Id, g =>
                 {
@@ -54,20 +54,20 @@ namespace CompositeC1Contrib.Security
                     continue;
                 }
 
-                if (permissions.DisableInheritance)
-                {
-                    break;
-                }
-
                 var ar = PermissionsFacade.Split(permissions.AllowedRoles);
                 var dr = PermissionsFacade.Split(permissions.DeniedRoles);
 
                 allowedRoles.AddRange(ar);
                 deniedRolews.AddRange(dr);
+
+                if (permissions.DisableInheritance)
+                {
+                    break;
+                }
             }
 
-            evaluatedPermissions.InheritedAllowedRules = allowedRoles.ToArray();
-            evaluatedPermissions.InheritedDenieddRules = deniedRolews.ToArray();
+            evaluatedPermissions.InheritedAllowedRules = allowedRoles.Distinct().ToArray();
+            evaluatedPermissions.InheritedDenieddRules = deniedRolews.Distinct().ToArray();
         }
     }
 }

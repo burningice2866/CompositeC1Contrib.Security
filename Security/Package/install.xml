@@ -5,7 +5,7 @@
   
   <mi:PackageInformation name="CompositeC1Contrib.Security" 
                          groupName="Contribution.CompositeC1Contrib" 
-                         version="0.9.1" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.Security" 
+                         version="0.9.2" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.Security" 
                          readMoreUrl="https://github.com/burningice2866/CompositeC1Contrib.Security"
                          id="498bfe4a-6be4-4589-b8fb-7aadec82177d" 
                          canBeUninstalled="true" 

@@ -30,14 +30,12 @@ namespace CompositeC1Contrib.Security
 
         public override EvaluatedPermissions GetEvaluatedPermissions(IData data)
         {
-            var folder = data as IMediaFileFolder;
-            if (folder != null)
+            if (data is IMediaFileFolder folder)
             {
                 return GetEvaluatedPermissions(folder);
             }
 
-            var file = data as IMediaFile;
-            if (file != null)
+            if (data is IMediaFile file)
             {
                 return GetEvaluatedPermissions(file);
             }
@@ -74,23 +72,23 @@ namespace CompositeC1Contrib.Security
             {
                 if (PermissionsCache.TryGetValue(new CompoundIDataPermissionsKey(folder), out IDataPermissions permissions))
                 {
-                    if (permissions.DisableInheritance)
-                    {
-                        break;
-                    }
-
                     var ar = PermissionsFacade.Split(permissions.AllowedRoles);
                     var dr = PermissionsFacade.Split(permissions.DeniedRoles);
 
                     allowedRoles.AddRange(ar);
                     deniedRolews.AddRange(dr);
+
+                    if (permissions.DisableInheritance)
+                    {
+                        break;
+                    }
                 }
 
                 folder = GetParent(folder);
             }
 
-            evaluatedPermissions.InheritedAllowedRules = allowedRoles.ToArray();
-            evaluatedPermissions.InheritedDenieddRules = deniedRolews.ToArray();
+            evaluatedPermissions.InheritedAllowedRules = allowedRoles.Distinct().ToArray();
+            evaluatedPermissions.InheritedDenieddRules = deniedRolews.Distinct().ToArray();
         }
 
         private static IMediaFileFolder GetParent(IMediaFileFolder folder)
@@ -113,23 +111,19 @@ namespace CompositeC1Contrib.Security
 
             using (var data = new DataConnection())
             {
-                var parentFolder = data.Get<IMediaFileFolder>().SingleOrDefault(f => f.StoreId == storeId && f.Path.Equals(parentPath, StringComparison.OrdinalIgnoreCase));
-
-                return parentFolder;
+                return data.Get<IMediaFileFolder>().SingleOrDefault(f => f.StoreId == storeId && f.Path.Equals(parentPath, StringComparison.OrdinalIgnoreCase));
             }
         }
 
         private static string GetParentFolder(string path)
         {
-            var split = path.Split(new[] { '\\', '/' });
+            var split = path.Split('\\', '/');
             if (split.Length == 1)
             {
                 return "/";
             }
 
-            var folder = String.Join("/", split.Take(split.Length - 1));
-
-            return folder;
+            return String.Join("/", split.Take(split.Length - 1));
         }
     }
 }
