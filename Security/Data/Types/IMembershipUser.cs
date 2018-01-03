@@ -7,11 +7,11 @@ using Composite.Data.Hierarchy.DataAncestorProviders;
 namespace CompositeC1Contrib.Security.Data.Types
 {
     [AutoUpdateble]
-    [KeyPropertyName("Id")]
+    [KeyPropertyName(nameof(Id))]
     [DataScope(DataScopeIdentifier.PublicName)]
     [ImmutableTypeId("8fc36e30-107c-4a15-805c-6b97baa674e5")]
     [Title("Membership user")]
-    [LabelPropertyName("UserName")]
+    [LabelPropertyName(nameof(UserName))]
     [DataAncestorProvider(typeof(NoAncestorDataAncestorProvider))]
     public interface IMembershipUser : IData
     {

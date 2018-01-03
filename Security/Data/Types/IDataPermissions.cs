@@ -5,8 +5,8 @@ using Composite.Data;
 namespace CompositeC1Contrib.Security.Data.Types
 {
     [Title("Data permissions")]
-    [KeyPropertyName(0, "DataTypeId")]
-    [KeyPropertyName(1, "DataId")]
+    [KeyPropertyName(0, nameof(DataTypeId))]
+    [KeyPropertyName(1, nameof(DataId))]
     [ImmutableTypeId("006883b3-b56d-415d-9fb4-0ef901cd8f5f")]
     public interface IDataPermissions : IPermissions
     {

@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.Security
             get
             {
                 var settings = GetWebsiteSecuritySettings();
-                if (settings != null && settings.LoginPageId != null)
+                if (settings?.LoginPageId != null)
                 {
                     return SiteMap.Provider.FindSiteMapNodeFromKey(settings.LoginPageId.Value.ToString());
                 }
