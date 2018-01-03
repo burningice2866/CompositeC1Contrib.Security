@@ -37,6 +37,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
                 Bindings.Add(nameof(IWebsiteSecuritySettings.WebsiteId), settings.WebsiteId);
                 Bindings.Add(nameof(IWebsiteSecuritySettings.LoginPageId), settings.LoginPageId);
                 Bindings.Add(nameof(IWebsiteSecuritySettings.ForgotPasswordPageId), settings.ForgotPasswordPageId);
+                Bindings.Add(nameof(IWebsiteSecuritySettings.AfterLoginPageId), settings.AfterLoginPageId);
             }
         }
 
@@ -44,6 +45,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
         {
             var loginPageId = GetBinding<Guid?>(nameof(IWebsiteSecuritySettings.LoginPageId));
             var forgotPasswordPageId = GetBinding<Guid?>(nameof(IWebsiteSecuritySettings.ForgotPasswordPageId));
+            var afterLoginPageId = GetBinding<Guid?>(nameof(IWebsiteSecuritySettings.AfterLoginPageId));
 
             using (var data = new DataConnection())
             {
@@ -51,6 +53,7 @@ namespace CompositeC1Contrib.Security.C1Console.Workflows
 
                 settings.LoginPageId = loginPageId;
                 settings.ForgotPasswordPageId = forgotPasswordPageId;
+                settings.AfterLoginPageId = afterLoginPageId;
 
                 data.Update(settings);
             }

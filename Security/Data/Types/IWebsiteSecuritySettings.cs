@@ -30,5 +30,10 @@ namespace CompositeC1Contrib.Security.Data.Types
         [ImmutableFieldId("84b6919b-2781-4dab-8c74-2db90283f447")]
         [ForeignKey(typeof(IPage), nameof(IPage.Id), AllowCascadeDeletes = false)]
         Guid? ForgotPasswordPageId { get; set; }
+
+        [StoreFieldType(PhysicalStoreFieldType.Guid, IsNullable = true)]
+        [ImmutableFieldId("258cc92a-de83-4500-b7e9-cc0c0c482b11")]
+        [ForeignKey(typeof(IPage), nameof(IPage.Id), AllowCascadeDeletes = false)]
+        Guid? AfterLoginPageId { get; set; }
     }
 }

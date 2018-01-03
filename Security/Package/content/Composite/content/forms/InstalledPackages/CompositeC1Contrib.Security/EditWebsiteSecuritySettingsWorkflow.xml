@@ -3,6 +3,7 @@
     <cms:binding name="WebsiteId" type="System.Guid" optional="true" />
     <cms:binding name="LoginPageId" type="System.Guid" optional="true" />
     <cms:binding name="ForgotPasswordPageId" type="System.Guid" optional="true" />
+    <cms:binding name="AfterLoginPageId" type="System.Guid" optional="true" />
   </cms:bindings>
 
   <cms:layout>
@@ -21,6 +22,12 @@
         <DataReferenceTreeSelector Label="Forgot password page" Help="" Handle="Composite.Management.PageIdSelectorDialog" DataType="Composite.Data.Types.IPage,Composite" NullValueAllowed="true">
           <DataReferenceTreeSelector.Selected>
             <cms:bind source="ForgotPasswordPageId" />
+          </DataReferenceTreeSelector.Selected>
+        </DataReferenceTreeSelector>
+
+        <DataReferenceTreeSelector Label="After login page" Help="Sets the default page to go to after login if a ReturnUrl parameter hasn't been provided" Handle="Composite.Management.PageIdSelectorDialog" DataType="Composite.Data.Types.IPage,Composite" NullValueAllowed="true">
+          <DataReferenceTreeSelector.Selected>
+            <cms:bind source="AfterLoginPageId" />
           </DataReferenceTreeSelector.Selected>
         </DataReferenceTreeSelector>
       </FieldGroup>
