@@ -42,9 +42,8 @@
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.4\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -146,16 +145,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Package\Config\App_Data\Composite\composite.config" />
-    <None Include="Package\Config\web.config" />
+    <None Include="Package\config\App_Data\Composite\composite.config" />
+    <None Include="Package\config\web.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del "$(ProjectDir)Package\Bin\"
-mkdir "$(ProjectDir)Package\Bin\"
+    <PostBuildEvent>del "$(ProjectDir)Package\bin\"
+mkdir "$(ProjectDir)Package\bin\"
 
-copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"</PostBuildEvent>
+copy "$(TargetDir)CompositeC1Contrib.Core.dll" "$(ProjectDir)Package\bin\CompositeC1Contrib.Core.dll"
+copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\bin\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
