@@ -24,6 +24,7 @@
 
       <Directories>
         <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.Security\" targetDirectory="~\Composite\content\forms\InstalledPackages\CompositeC1Contrib.Security\" allowOverwrite="true" deleteTargetDirectory="true" />
+        <Directory sourceDirectory="~\content\Composite\InstalledPackages\CompositeC1Contrib.Security\" targetDirectory="~\Composite\InstalledPackages\CompositeC1Contrib.Security\" allowOverwrite="true" deleteTargetDirectory="true" />
       </Directories>
     </mi:Add>
 
